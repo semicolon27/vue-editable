@@ -22,6 +22,11 @@
             type="text"
             v-model="data[index][key]"
             hide-details="auto"
+            :ref="`${key + index}`"
+            v-on:keyup.up="handleArrow('up')"
+            v-on:keyup.down="handleArrow('down')"
+            v-on:keyup.right="handleArrow('right')"
+            v-on:keyup.left="handleArrow('left')"
           ></v-text-field>
         </td>
       </tr>
@@ -59,6 +64,45 @@ export default {
     this.init();
   },
   methods: {
+    handleArrow(whyArrow) {
+      let idxAwal = 0;
+      let idxAkhir = this.data.length;
+      let nmColumn = Object.keys(this.data[0]);
+      let idx = this.active.index;
+      let key = this.active.key;
+      if (whyArrow === "up") {
+        if (idx - 1 < idxAwal) return;
+
+        let idxCustom = idx - 1;
+        this.$nextTick(() => this.setUnactive(idx, key));
+        this.$refs[key + idxCustom][0].focus();
+        this.$nextTick(() => this.setActive(idxCustom, key));
+      }
+      if (whyArrow === "down") {
+        if (idx + 1 === idxAkhir) return;
+
+        let idxCustom = idx + 1;
+        this.$nextTick(() => this.setUnactive(idx, key));
+        this.$refs[key + idxCustom][0].focus();
+        this.$nextTick(() => this.setActive(idxCustom, key));
+      }
+      if (whyArrow === "right") {
+        if (nmColumn.indexOf(key) === idxAkhir - 1) return;
+
+        let keyCustom = nmColumn[nmColumn.indexOf(key) + 1];
+        this.$nextTick(() => this.setUnactive(idx, key));
+        this.$refs[keyCustom + idx][0].focus();
+        this.$nextTick(() => this.setActive(idx, keyCustom));
+      }
+      if (whyArrow === "left") {
+        if (nmColumn.indexOf(key) - 1 < idxAwal) return;
+
+        let keyCustom = nmColumn[nmColumn.indexOf(key) - 1];
+        this.$nextTick(() => this.setUnactive(idx, key));
+        this.$refs[keyCustom + idx][0].focus();
+        this.$nextTick(() => this.setActive(idx, keyCustom));
+      }
+    },
     setActive(index, key) {
       this.active = {
         index: index,
@@ -93,17 +137,17 @@ export default {
       ];
       this.data = [
         {
-          nama: "Hanan",
+          nama: "KAMBING",
           kelas: "12",
           noabsen: "17",
         },
         {
-          nama: "Caca",
+          nama: "KUMBANG",
           kelas: "12",
           noabsen: "27",
         },
         {
-          nama: "Angga",
+          nama: "GAJAH",
           kelas: "12",
           noabsen: "1",
         },
